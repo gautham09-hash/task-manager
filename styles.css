@@ -1,0 +1,159 @@
+:root {
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --accent-color: #6366f1;
+    --accent-hover: #4f46e5;
+    --danger-color: #ef4444;
+    --border-color: #e2e8f0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: #f8fafc;
+    
+    /* Variables that JavaScript will update */
+    --mouse-x: 50vw;
+    --mouse-y: 50vh;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    overflow: hidden;
+    position: relative;
+    z-index: 0;
+}
+
+/* Interactive Topographic Pattern */
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    
+    /* The first circle tracks your mouse, the second stays still to create the bending Moiré effect */
+    background-image: 
+        repeating-radial-gradient(circle at var(--mouse-x) var(--mouse-y), transparent 0, transparent 20px, #cbd5e1 20px, #cbd5e1 21px),
+        repeating-radial-gradient(circle at 100% 100%, transparent 0, transparent 20px, #cbd5e1 20px, #cbd5e1 21px);
+    z-index: -1;
+    
+    /* Slow idle drift when the mouse is still */
+    background-size: 150px 150px;
+    animation: panBg 15s linear infinite;
+}
+
+@keyframes panBg {
+    0% { background-position: 0px 0px, 0px 0px; }
+    100% { background-position: 0px 0px, 150px 150px; }
+}
+
+.app-container {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    width: 100%;
+    max-width: 500px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 1);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+    padding: 32px;
+    position: relative;
+    z-index: 1;
+}
+
+header { margin-bottom: 24px; }
+header h1 { color: var(--text-primary); font-size: 32px; font-weight: 700; letter-spacing: -0.5px; }
+header p { color: var(--text-secondary); font-size: 15px; margin-top: 4px; font-weight: 500; }
+
+.input-wrapper { display: flex; gap: 12px; margin-bottom: 24px; }
+#task-input {
+    flex: 1; padding: 16px; 
+    background: #ffffff;
+    color: var(--text-primary);
+    border: 2px solid var(--border-color); 
+    border-radius: 14px; font-size: 16px;
+    outline: none; transition: all 0.3s ease;
+}
+#task-input::placeholder { color: #94a3b8; }
+#task-input:focus { 
+    border-color: var(--accent-color); 
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15); 
+}
+
+.add-btn {
+    background: var(--accent-color); color: white; border: none; border-radius: 14px;
+    width: 54px; cursor: pointer; display: flex; justify-content: center; align-items: center;
+    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.4); transition: all 0.3s ease;
+}
+.add-btn:hover { background: var(--accent-hover); transform: translateY(-2px); }
+.add-btn:active { transform: scale(0.95); }
+
+.filter-section {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 24px; border-bottom: 2px solid var(--border-color); padding-bottom: 16px;
+}
+.filter-group { display: flex; gap: 8px; }
+.filter-btn {
+    background: transparent; border: none; color: var(--text-secondary);
+    font-size: 14px; font-weight: 600; cursor: pointer; padding: 8px 14px;
+    border-radius: 10px; transition: all 0.2s ease;
+}
+.filter-btn:hover { background: #f1f5f9; color: var(--text-primary); }
+.filter-btn.active { background: var(--accent-color); color: white; }
+
+.clear-btn {
+    background: transparent; border: none; color: var(--danger-color); font-size: 13px;
+    font-weight: 600; cursor: pointer; padding: 8px 12px; border-radius: 10px; transition: all 0.2s ease;
+}
+.clear-btn:hover { background: rgba(239, 68, 68, 0.1); }
+.clear-btn.hidden { display: none; }
+
+#task-list { list-style: none; max-height: 400px; overflow-y: auto; padding-right: 4px; }
+#task-list::-webkit-scrollbar { width: 6px; }
+#task-list::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+
+.task-item {
+    display: flex; align-items: center; padding: 16px; 
+    background: #ffffff;
+    margin-bottom: 8px; border-radius: 12px; 
+    border: 1px solid var(--border-color);
+    animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; gap: 14px; transition: all 0.2s ease;
+}
+.task-item:hover { transform: translateX(4px); border-color: #cbd5e1; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+.task-item.fade-out { animation: fadeOut 0.3s ease forwards; }
+
+.task-checkbox {
+    appearance: none; width: 24px; height: 24px; border: 2px solid #cbd5e1;
+    border-radius: 8px; cursor: pointer; display: grid; place-content: center;
+    transition: all 0.2s ease; background: #f8fafc;
+}
+.task-checkbox::before {
+    content: ""; width: 14px; height: 14px; background-color: white;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    transform: scale(0); transition: 0.2s transform ease;
+}
+.task-checkbox:checked { background-color: var(--accent-color); border-color: var(--accent-color); }
+.task-checkbox:checked::before { transform: scale(1); }
+
+.task-text { flex: 1; font-size: 16px; font-weight: 500; color: var(--text-primary); transition: all 0.3s ease; }
+.task-item.completed .task-text { color: #94a3b8; text-decoration: line-through; }
+
+.delete-btn {
+    background: none; border: none; color: #94a3b8; cursor: pointer;
+    padding: 8px; border-radius: 8px; transition: all 0.2s ease;
+    display: flex; align-items: center; justify-content: center;
+}
+.task-item:hover .delete-btn { color: var(--danger-color); }
+.delete-btn:hover { background: rgba(239, 68, 68, 0.1); transform: scale(1.1); }
+
+@keyframes slideIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { from { opacity: 1; transform: scale(0.95); } to { opacity: 0; transform: scale(0.9); } }
